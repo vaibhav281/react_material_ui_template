@@ -1,24 +1,52 @@
-import logo from './logo.svg';
-import './App.css';
+import { useState, useEffect } from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css';
+
+// import './App.css';
+import './Style/css/appStyle.css'
+import NavBar from './components/Navbar/Navbar.js';
+import Loader from './components/Loader';
+import Router from './Routes';
+import { BrowserRouter } from 'react-router-dom';
+// import Login from './Pages/Login';
+// import Register from './Pages/Register';
+// import Home from './Pages/Home';
+
 
 function App() {
+  const [isNavigating, setIsNavigating] = useState(false);
+
+  useEffect(() => {
+    const handleStartNavigation = () => {
+      setIsNavigating(true);
+    };
+
+    const handleFinishNavigation = () => {
+      setIsNavigating(false);
+    };
+
+    window.addEventListener('beforeunload', handleStartNavigation);
+    window.addEventListener('unload', handleFinishNavigation);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleStartNavigation);
+      window.removeEventListener('unload', handleFinishNavigation);
+    };
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <BrowserRouter>
+      <NavBar />
+      {isNavigating && <Loader />}
+      <Router/>
+    {/* <Router>
+      <Routes>
+        <Route exact path="/" element={<Home />} />
+        <Route path="/admin_login" element={<Login />} />
+        <Route path="/admin_register" element={<Register />} />
+        <Route path="*" element={<NotFound />} />
+      </Routes>
+    </Router> */}
+    </BrowserRouter>
   );
 }
 
